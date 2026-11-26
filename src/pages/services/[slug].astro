@@ -1,0 +1,106 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import FAQ from '../../components/FAQ.astro';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import TechLogos from '../../components/TechLogos.astro';
+import { services, type Service } from '../../data/services';
+import { projects } from '../../data/projects';
+import { processSteps } from '../../data/content';
+import { servicePhotos } from '../../data/photos';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../config/schema';
+
+export const getStaticPaths = (() => services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }))) satisfies GetStaticPaths;
+
+const { service: s } = Astro.props as { service: Service };
+const crumbs = [{ label: 'Services', href: '/services/' }, { label: s.title, href: `/services/${s.slug}/` }];
+const related = projects.filter((p) => p.services.includes(s.slug)).slice(0, 3);
+const others = services.filter((o) => o.slug !== s.slug).slice(0, 4);
+const photo = servicePhotos[s.slug];
+const isTalent = s.group === 'talent';
+const steps = s.steps ?? processSteps;
+---
+<Base title={s.metaTitle} description={s.metaDescription} keywords={s.keywords} schema={[breadcrumbSchema(crumbs), serviceSchema(s), faqSchema(s.faqs)]}>
+  <PageHero crumbs={crumbs} eyebrow="Service" title={s.title} lead={s.short}>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="/contact/">{isTalent ? (s.slug === 'tech-recruitment' ? 'Start hiring' : 'Request profiles') : 'Get a free estimate'} <Icon name="arrow" /></a>
+      <a class="btn btn-ghost" href="#faq">Read FAQs</a>
+    </div>
+  </PageHero>
+
+  <section class="section-sm">
+    <div class="container split">
+      <div class="reveal">
+        <h2>Why it matters</h2>
+        <p class="lead">{s.intro}</p>
+        <h3 style="margin-top:2rem">What you can expect</h3>
+        <ul class="check-list">{s.outcomes.map((o) => <li><Icon name="check" /> {o}</li>)}</ul>
+      </div>
+      <div class="reveal">
+        {photo && <Image src={photo.src} alt={photo.alt} widths={[480, 720, 960]} sizes="(min-width: 960px) 560px, 100vw" class="photo" loading="eager" fetchpriority="high" />}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal"><span class="eyebrow">What we deliver</span><h2>{isTalent ? (s.slug === 'tech-recruitment' ? 'What we handle for you' : 'Who you can hire') : `${s.title}: what's included`}</h2></div>
+      <div class={`grid ${s.deliverables.length % 3 === 0 ? 'grid-3' : 'grid-2'}`}>
+        {s.deliverables.map((d) => (
+          <div class="glass card reveal"><div class="icon-tile"><Icon name={s.icon} /></div><h3>{d.title}</h3><p>{d.text}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="glass card reveal">
+        <h2 style="font-size:1.6rem">{isTalent ? 'Roles & working models' : 'Tools & technologies'}</h2>
+        <ul class="tags" style="margin-top:1.25rem">{s.stack.map((t) => <li class="tag">{t}</li>)}</ul>
+        {s.logos && <div style="margin-top:1.75rem"><TechLogos names={s.logos} /></div>}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal"><span class="eyebrow">Our approach</span><h2>{isTalent ? 'How the process works' : `How we deliver ${s.title}`}</h2></div>
+      <ol class="grid grid-4">
+        {steps.map((p, i) => (
+          <li class="glass card step reveal"><span class="num">0{i + 1}</span><h3>{p.title}</h3><p>{p.text}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section-sm">
+      <div class="container">
+        <div class="section-head reveal"><span class="eyebrow">Related work</span><h2>Projects using this service</h2></div>
+        <div class="grid grid-3">{related.map((p) => <ProjectCard project={p} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section-head reveal"><span class="eyebrow">FAQ</span><h2>{s.title} — common questions</h2></div>
+      <FAQ items={s.faqs} />
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="section-head reveal"><h2>Explore other services</h2></div>
+      <div class="grid grid-4">{others.map((o) => <ServiceCard service={o} />)}</div>
+    </div>
+  </section>
+
+  <CTA title={isTalent ? 'Tell us who you need to hire' : `Ready to start your ${s.title} project?`} text={isTalent ? 'Share the role, skills and seniority you are looking for. We will reply with a clear plan, timeline and pricing.' : undefined} />
+</Base>

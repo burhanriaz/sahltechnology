@@ -1,0 +1,20 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import type { Service } from '../data/services';
+import { servicePhotos } from '../data/photos';
+interface Props { service: Service; withPhoto?: boolean; eager?: boolean }
+const { service: s, withPhoto = false, eager = false } = Astro.props;
+const photo = withPhoto ? servicePhotos[s.slug] : undefined;
+---
+<a class={`glass card reveal ${photo ? 'service-photo-card' : ''}`} href={`/services/${s.slug}/`}>
+  {photo && (
+    <div class="service-thumb">
+      <Image src={photo.src} alt={photo.alt} widths={[320, 480, 640]} sizes="(min-width: 1000px) 280px, (min-width: 640px) 50vw, 100vw" loading={eager ? 'eager' : 'lazy'} />
+    </div>
+  )}
+  <div class="icon-tile"><Icon name={s.icon} /></div>
+  <h3>{s.title}</h3>
+  <p>{s.short}</p>
+  <span class="link-arrow">Learn more <Icon name="arrow" /></span>
+</a>

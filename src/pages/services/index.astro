@@ -1,0 +1,72 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import TalentSection from '../../components/TalentSection.astro';
+import { services } from '../../data/services';
+import { processSteps } from '../../data/content';
+import { breadcrumbSchema, serviceSchema } from '../../config/schema';
+import { SITE } from '../../config/site';
+const crumbs = [{ label: 'Services', href: '/services/' }];
+---
+<Base
+  title="Web Development & Automation Services"
+  description="Sahl Technology services: web and mobile development, custom software, cloud & DevOps, QA automation, UI/UX, SEO, dedicated developers and hiring."
+  keywords={['IT services company', 'software development services', 'QA automation services', 'SEO services', 'hire dedicated developers', 'tech recruitment']}
+  schema={[
+    breadcrumbSchema(crumbs),
+    {
+      '@type': 'ItemList',
+      name: `${SITE.name} services`,
+      itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, item: serviceSchema(s) })),
+    },
+  ]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Our services"
+    title='Everything you need to <span class="grad-text">build, launch & grow</span>'
+    lead="Strategy, design, engineering, quality and growth — delivered by one accountable team so nothing gets lost between vendors."
+  />
+
+  <section class="section-sm">
+    <div class="container">
+      <h2 class="sr-only">Our services</h2>
+      <div class="grid grid-4">
+        {services.filter((s) => s.group !== 'talent').map((s, i) => <ServiceCard service={s} withPhoto eager={i < 4} />)}
+      </div>
+    </div>
+  </section>
+
+  <TalentSection />
+
+  <section class="section">
+    <div class="container split">
+      <div class="reveal">
+        <span class="eyebrow">Engagement models</span>
+        <h2>Work with us the way that suits you</h2>
+        <p class="lead">Whether you need a complete product built or extra capacity for your in-house team, we have a flexible model that fits.</p>
+      </div>
+      <div class="grid">
+        <div class="glass card reveal"><h3>Fixed-scope project</h3><p>A clearly defined scope, milestones and price. Ideal for websites, MVPs and well-understood requirements.</p></div>
+        <a class="glass card reveal" href="/services/hire-dedicated-developers/"><h3>Dedicated developers & teams</h3><p>Hire dedicated developers, QA engineers, DevOps engineers or SEO experts — or a full team — working only on your product, monthly or hourly.</p><span class="link-arrow">Hire talent <Icon name="arrow" /></span></a>
+        <div class="glass card reveal"><h3>Consulting & support</h3><p>Hourly or retainer-based expertise for audits, architecture, maintenance and ongoing improvements.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="section-head reveal"><span class="eyebrow">Process</span><h2>How every engagement runs</h2></div>
+      <ol class="grid grid-4">
+        {processSteps.map((s, i) => (
+          <li class="glass card reveal"><div class="icon-tile"><Icon name={s.icon} /></div><h3>{i + 1}. {s.title}</h3><p>{s.text}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CTA title="Not sure which service you need?" text="Book a free discovery call. We will listen, ask the right questions and recommend the simplest path to your goal." />
+</Base>

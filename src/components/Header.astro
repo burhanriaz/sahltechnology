@@ -1,0 +1,29 @@
+---
+import { NAV } from '../config/site';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+const path = Astro.url.pathname;
+const activeHref = [...NAV].filter((l) => (l.href === '/' ? path === '/' : path.startsWith(l.href))).sort((a, b) => b.href.length - a.href.length)[0]?.href;
+const isActive = (href: string) => href === activeHref;
+---
+<header class="site-header">
+  <div class="container">
+    <div class="nav-shell">
+      <a href="/" class="brand" aria-label="Sahl Technology home">
+        <Logo />
+        <span>Sahl <b>Technology</b></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        {NAV.map((l) => <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>)}
+      </nav>
+      <a class="btn btn-primary nav-cta" href="/contact/">Request a quote</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" data-nav-toggle>
+        <Icon name="menu" />
+      </button>
+    </div>
+    <nav id="mobile-menu" class="mobile-menu" aria-label="Mobile">
+      {NAV.map((l) => <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>)}
+      <a class="btn btn-primary" href="/contact/">Request a quote</a>
+    </nav>
+  </div>
+</header>

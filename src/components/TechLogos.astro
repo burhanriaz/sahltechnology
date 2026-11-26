@@ -1,0 +1,26 @@
+---
+// Technology logos from Simple Icons (CC0 1.0), shown in their original brand colours.
+import * as si from 'simple-icons';
+interface Props { names?: string[] }
+type SI = { title: string; path: string; hex: string };
+const defaults = ['siReact', 'siNextdotjs', 'siAstro', 'siTypescript', 'siNodedotjs', 'siFlutter', 'siDotnet', 'siLaravel', 'siPython', 'siPostgresql', 'siDocker', 'siKubernetes', 'siGooglecloud', 'siFirebase', 'siTailwindcss', 'siFigma'];
+const { names = defaults } = Astro.props;
+const icons = names
+  .map((n) => (si as unknown as Record<string, SI | undefined>)[n])
+  .filter((x): x is SI => Boolean(x));
+
+// Brand colours that are too pale to see on a white card fall back to dark navy.
+const colour = (hex: string) => {
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return lum > 0.8 ? '#06183b' : `#${hex}`;
+};
+---
+<ul class="tech-logos">
+  {icons.map((ic) => (
+    <li class="tech-logo" style={`--c:${colour(ic.hex)}`}>
+      <svg viewBox="0 0 24 24" role="img" aria-label={ic.title}><path d={ic.path} /></svg>
+      <span>{ic.title}</span>
+    </li>
+  ))}
+</ul>

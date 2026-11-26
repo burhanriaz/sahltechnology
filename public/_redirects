@@ -1,0 +1,12 @@
+# Old template URLs → new pages (Netlify / Cloudflare Pages format)
+/index.html        /               301
+/about.html        /about/         301
+/service.html      /services/      301
+/project.html      /projects/      301
+/contact.html      /contact/       301
+/team.html         /about/         301
+/testimonial.html  /about/         301
+/blog.html         /               301
+/404.html          /               301
+/services/digital-marketing-seo/  /services/seo-services/  301
+/services/digital-marketing-seo   /services/seo-services/  301

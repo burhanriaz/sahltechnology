@@ -1,0 +1,11 @@
+# Copy to .dev.vars for local testing with:  npm run preview:cf
+# .dev.vars is git-ignored. Never commit real keys.
+QUOTE_TO_EMAIL=you@example.com
+QUOTE_FROM_EMAIL=quotes@studio.sahlcalc.com
+QUOTE_FROM_NAME=Sahl Technology Quotes
+# QUOTE_REPLY_TO=
+# QUOTE_AUTOREPLY=off
+# Set to 1 to validate without sending any email:
+QUOTE_DRY_RUN=1
+# RESEND_API_KEY=
+# TURNSTILE_SECRET=

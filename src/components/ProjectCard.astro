@@ -1,0 +1,21 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import type { Project } from '../data/projects';
+import { getService } from '../data/services';
+interface Props { project: Project; eager?: boolean }
+const { project: p, eager = false } = Astro.props;
+const primary = getService(p.services[0]);
+---
+<article class="glass card project-card hover reveal">
+  <div class="project-cover">
+    <Image src={p.image} alt={p.imageAlt} widths={[400, 640, 800]} sizes="(min-width: 1000px) 380px, (min-width: 640px) 50vw, 100vw" loading={eager ? 'eager' : 'lazy'} />
+    {primary && <span class="project-badge"><Icon name={primary.icon} /> {primary.title}</span>}
+  </div>
+  <div class="project-body">
+    <span class="cat">{p.category}</span>
+    <h3>{p.title}</h3>
+    <p>{p.summary}</p>
+    <ul class="tags" aria-label="Focus areas">{p.tags.map((t) => <li class="tag">{t}</li>)}</ul>
+  </div>
+</article>

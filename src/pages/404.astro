@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { services } from '../data/services';
+---
+<Base title="Page not found" description="The page you are looking for could not be found." noindex>
+  <section class="section" style="text-align:center">
+    <div class="container">
+      <p style="color:var(--teal);font-size:clamp(5rem,14vw,8rem);font-weight:800;letter-spacing:-.04em;line-height:1;margin:0">404</p>
+      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem)">Page not found</h1>
+      <p class="lead" style="margin:0 auto 2rem">The page may have moved or no longer exists. Try one of these instead:</p>
+      <div class="btn-row" style="justify-content:center;margin-bottom:3rem">
+        <a class="btn btn-primary" href="/">Back to home <Icon name="arrow" /></a>
+        <a class="btn btn-ghost" href="/contact/">Contact us</a>
+      </div>
+      <ul class="tags" style="justify-content:center">
+        {services.map((s) => <li><a class="tag" href={`/services/${s.slug}/`}>{s.title}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>

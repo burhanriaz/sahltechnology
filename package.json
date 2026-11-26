@@ -8,7 +8,7 @@
     "build": "node scripts/og-image.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "preview:cf": "npm run build && wrangler pages dev dist --port 8788",
+    "preview:cf": "npm run build && wrangler dev",
     "og": "node scripts/og-image.mjs"
   },
   "dependencies": {

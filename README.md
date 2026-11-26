@@ -43,18 +43,20 @@ HowTo), XML sitemap, robots.txt, llms.txt, web manifest, 301 redirects from
 old `.html` URLs (`public/_redirects`), self-hosted fonts, responsive WebP
 images, semantic HTML and accessibility basics.
 
-## Deploy (Cloudflare Pages)
-The quote form sends email through a Cloudflare Pages Function (`functions/api/quote.ts`),
-so the site is hosted on **Cloudflare Pages**.
+## Deploy (Cloudflare Workers)
+The site runs as a Cloudflare **Worker** with static assets (`wrangler.jsonc`, entry `worker/index.ts`).
+The Worker serves `dist/` (including `_headers` and `_redirects`) and handles `POST /api/quote`
+with the shared handler in `functions/api/quote.ts` (the same file also works as a Pages Function).
 
-1. **Pages project:** Workers & Pages → Create → Pages → connect this Git repo.
-   Build command `npm run build`, output directory `dist`, env var `NODE_VERSION=22`.
-2. **Custom domain:** Pages project → Custom domains → add `studio.sahlcalc.com`.
+1. **Worker project** (already created as `sahltechnology`, connected to this repo):
+   build command `npm run build`, deploy command `npx wrangler deploy`, production branch `main`.
+   Pushes to `main` deploy to production; other branches get preview URLs.
+2. **Custom domain:** Worker → Settings → Domains & Routes → Add → Custom domain → `studio.sahlcalc.com`.
 3. **Resend (email):** resend.com → Domains → add `studio.sahlcalc.com`, add the DNS records it
    shows in Cloudflare DNS, wait for "Verified". Then API Keys → create a key (Sending access).
 4. **Turnstile (spam check):** Cloudflare → Turnstile → Add widget for `studio.sahlcalc.com`.
    Put the **site key** in `src/config/site.ts` → `turnstileSiteKey`.
-5. **Environment variables** (Pages project → Settings → Variables and secrets, Production):
+5. **Variables and secrets** (Worker → Settings → Variables and Secrets). `keep_vars` in `wrangler.jsonc` keeps them across deploys:
 
    | Name | Value | Type |
    |---|---|---|
@@ -66,11 +68,11 @@ so the site is hosted on **Cloudflare Pages**.
    | `QUOTE_REPLY_TO` | optional: where client replies to the confirmation go (default: `QUOTE_TO_EMAIL`) | Text |
    | `QUOTE_AUTOREPLY` | optional: `off` disables the confirmation email to the client | Text |
 
-   Redeploy after changing variables.
+   Redeploy (or push to `main`) after changing variables.
 
 **How the form works:** the enquiry email goes to `QUOTE_TO_EMAIL` with the client as Reply-To,
 so pressing Reply answers the client directly. The client gets a confirmation email whose
 Reply-To is your inbox. Bots are stopped by a hidden honeypot field, Turnstile and a same-origin check.
 
-**Test locally:** `cp .dev.vars.example .dev.vars` (git-ignored), then `npm run preview:cf` and open
-http://127.0.0.1:8788/. With `QUOTE_DRY_RUN=1` the form validates but sends nothing.
+**Test locally:** `cp .dev.vars.example .dev.vars` (git-ignored), then `npm run build && npx wrangler dev`
+and open http://127.0.0.1:8787/. With `QUOTE_DRY_RUN=1` the form validates but sends nothing.

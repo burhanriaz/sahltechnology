@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE } from '../config/site';
+import { breadcrumbSchema } from '../config/schema';
+const crumbs = [{ label: 'Terms of Service', href: '/terms/' }];
+const updated = '26 November 2026';
+// NOTE: General template — have it reviewed for your jurisdiction before launch.
+---
+<Base title="Terms of Service for the Sahl Technology Website" description={`The terms that govern use of the ${SITE.name} website, including acceptable use, intellectual property, third-party links and limitation of liability.`} schema={[breadcrumbSchema(crumbs)]}>
+  <PageHero crumbs={crumbs} title="Terms of Service" lead={`Last updated: ${updated}`} />
+  <section class="section-sm">
+    <div class="container">
+      <article class="glass card prose">
+        <p>By accessing this website you agree to these terms. If you do not agree, please do not use the site.</p>
+        <h2>Use of this website</h2>
+        <p>The content on this website is provided for general information about {SITE.legalName} and our services. You may not misuse the site, attempt to gain unauthorised access, or interfere with its operation.</p>
+        <h2>Intellectual property</h2>
+        <p>Unless otherwise stated, the {SITE.name} name, logo, text and design of this website are our property. Third-party images are used under their respective licences.</p>
+        <h2>No professional advice</h2>
+        <p>Information on this site does not constitute a binding offer or professional advice. Services are provided under a separate written agreement.</p>
+        <h2>Third-party links</h2>
+        <p>We are not responsible for the content or practices of websites linked from this site.</p>
+        <h2>Limitation of liability</h2>
+        <p>To the fullest extent permitted by law, we are not liable for any loss arising from your use of this website.</p>
+        <h2>Changes</h2>
+        <p>We may revise these terms at any time. Continued use of the site means you accept the current version.</p>
+        <h2>Contact</h2>
+        <p>Questions about these terms? <a href="/contact/">Contact us</a>.</p>
+      </article>
+    </div>
+  </section>
+</Base>

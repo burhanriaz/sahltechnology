@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import CTA from '../components/CTA.astro';
+import { projects } from '../data/projects';
+import { breadcrumbSchema } from '../config/schema';
+const crumbs = [{ label: 'Projects', href: '/projects/' }];
+---
+<Base
+  title="Our Work: Projects & Portfolio"
+  description="See software projects delivered by Sahl Technology: ERP systems, healthcare apps, car rental management, recruitment portals and event platforms."
+  keywords={['software development portfolio', 'ERP project', 'web app case study', 'mobile app portfolio']}
+  schema={[
+    breadcrumbSchema(crumbs),
+    {
+      '@type': 'CollectionPage',
+      name: 'Sahl Technology projects',
+      hasPart: projects.map((p) => ({ '@type': 'CreativeWork', name: p.title, genre: p.category, description: p.summary, keywords: p.tags.join(', ') })),
+    },
+  ]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Portfolio"
+    title='Work we are <span class="grad-text">proud of</span>'
+    lead="A selection of platforms and products we have designed, built and supported — from enterprise ERP to consumer mobile apps."
+  />
+  <section class="section-sm">
+    <div class="container">
+      <h2 class="sr-only">All projects</h2>
+      <div class="grid grid-3">{projects.map((p, i) => <ProjectCard project={p} eager={i < 3} />)}</div>
+    </div>
+  </section>
+  <CTA title="Your project could be next" />
+</Base>

@@ -1,0 +1,166 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import FAQ from '../components/FAQ.astro';
+import CTA from '../components/CTA.astro';
+import TechLogos from '../components/TechLogos.astro';
+import TalentSection from '../components/TalentSection.astro';
+import { services } from '../data/services';
+import { projects } from '../data/projects';
+import { processSteps, homeFaqs } from '../data/content';
+import { photos } from '../data/photos';
+import { faqSchema } from '../config/schema';
+---
+<Base
+  title="Sahl Technology | Web Development & Automation"
+  description="Sahl Technology builds websites, web apps and custom software, automates business processes and testing, delivers SEO and provides dedicated developers."
+  keywords={['web development company', 'business process automation', 'custom software development', 'QA automation', 'hire dedicated developers']}
+  schema={[faqSchema(homeFaqs)]}
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Web development &amp; automation</span>
+        <h1>Websites, software and automation that make work <span class="grad-text">easier</span></h1>
+        <p class="lead">We design and build websites, web apps and custom business software, automate repetitive work and testing, and provide dedicated developers when your team needs more hands.</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="/contact/">Request a quote <Icon name="arrow" /></a>
+          <a class="btn btn-ghost" href="/services/">View our services</a>
+        </div>
+        <div class="trust-row">
+          <span><Icon name="check" /> Free discovery call</span>
+          <span><Icon name="check" /> You own the code</span>
+          <span><Icon name="check" /> Reply within one business day</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-photo">
+          <Image src={photos.heroTeam} alt="Software engineers collaborating on laptops in an office" widths={[560, 800, 1120]} sizes="(min-width: 960px) 560px, 100vw" loading="eager" fetchpriority="high" />
+        </div>
+        <div class="glass-light hero-note note-a">
+          <span class="icon-tile"><Icon name="shield" /></span>
+          <span><strong>Tested before every release</strong>Manual and automated QA with Playwright and Selenium</span>
+        </div>
+        <div class="glass-light hero-note note-b">
+          <span class="icon-tile"><Icon name="bolt" /></span>
+          <span><strong>Automation first</strong>Less repetitive work for your team</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Value strip -->
+  <section class="section-sm" aria-label="Why choose Sahl Technology">
+    <div class="container">
+      <div class="glass strip">
+        <div><span class="strip-icon"><Icon name="layers" /></span><strong>One team, end to end</strong><span>Planning, design, development, testing and SEO</span></div>
+        <div><span class="strip-icon"><Icon name="clock" /></span><strong>Clear progress</strong><span>Two-week sprints with working demos</span></div>
+        <div><span class="strip-icon"><Icon name="bolt" /></span><strong>Automation first</strong><span>Less manual work for your team and ours</span></div>
+        <div><span class="strip-icon"><Icon name="wrench" /></span><strong>Support after launch</strong><span>Maintenance plans that keep things running</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section bg-soft" id="services">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Services</span>
+        <h2>What we do</h2>
+        <p class="lead">From planning and design to development, testing and SEO, one team handles it, so nothing falls between vendors.</p>
+      </div>
+      <div class="grid grid-4">
+        {services.filter((s) => s.group !== 'talent').map((s) => <ServiceCard service={s} />)}
+      </div>
+      <p style="margin-top:2rem"><a class="link-arrow" href="/services/">Compare all services <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <!-- Hire talent -->
+  <TalentSection />
+
+  <!-- Why us -->
+  <section class="section bg-soft">
+    <div class="container split">
+      <div class="reveal">
+        <Image src={photos.teamOffice} alt="Project team reviewing work together around a table" widths={[480, 720, 960]} sizes="(min-width: 960px) 560px, 100vw" class="photo" loading="lazy" />
+      </div>
+      <div class="reveal">
+        <span class="eyebrow">Why Sahl Technology</span>
+        <h2>“Sahl” means easy. That’s how we work.</h2>
+        <p class="lead">Technology projects go wrong when nobody knows what is happening. We keep things simple: clear plans, regular updates and software your team finds easy to use.</p>
+        <ul class="check-list" style="margin:1.5rem 0 2rem">
+          <li><Icon name="check" /> Scope, timeline and price agreed before work starts</li>
+          <li><Icon name="check" /> Weekly progress updates and demos of working software</li>
+          <li><Icon name="check" /> Manual and automated testing built into every release</li>
+          <li><Icon name="check" /> Full ownership of code and designs on final payment</li>
+        </ul>
+        <a class="btn btn-ghost" href="/about/">About us <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">How we work</span>
+        <h2>How a project runs</h2>
+      </div>
+      <ol class="grid grid-4">
+        {processSteps.map((s, i) => (
+          <li class="glass card step reveal">
+            <span class="num">0{i + 1}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p style="margin-top:2rem"><a class="link-arrow" href="/process/">See the full process <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="section bg-soft" id="projects">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Our work</span>
+        <h2>Recent projects</h2>
+        <p class="lead">ERP platforms, healthcare apps, booking systems and recruitment portals built for real businesses.</p>
+      </div>
+      <div class="grid grid-3">
+        {projects.slice(0, 3).map((p) => <ProjectCard project={p} />)}
+      </div>
+      <p style="margin-top:2rem"><a class="btn btn-ghost" href="/projects/">View all projects <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <!-- Tech -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Technology</span>
+        <h2>Technologies we work with</h2>
+        <p class="lead">Proven, well-supported tools, chosen to fit each project and to be easy for your team to maintain.</p>
+      </div>
+      <TechLogos />
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section bg-soft">
+    <div class="container">
+      <div class="section-head center reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2>Frequently asked questions</h2>
+      </div>
+      <FAQ items={homeFaqs} />
+    </div>
+  </section>
+
+  <CTA />
+</Base>

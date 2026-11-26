@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE } from '../config/site';
+import { breadcrumbSchema } from '../config/schema';
+const crumbs = [{ label: 'Privacy Policy', href: '/privacy-policy/' }];
+const updated = '26 November 2026';
+// NOTE: General template — have it reviewed for your jurisdiction before launch.
+---
+<Base title="Privacy & Cookie Policy" description={`How ${SITE.name} collects, uses and protects personal information submitted through this website.`} schema={[breadcrumbSchema(crumbs)]}>
+  <PageHero crumbs={crumbs} title="Privacy &amp; Cookie Policy" lead={`Last updated: ${updated}`} />
+  <section class="section-sm">
+    <div class="container">
+      <article class="glass card prose">
+        <p>{SITE.legalName} (“{SITE.name}”, “we”, “us”) respects your privacy. This policy explains what information we collect through this website, why, and the choices you have.</p>
+        <h2>Information we collect</h2>
+        <ul>
+          <li><strong>Information you provide</strong> — when you use our contact form we collect your name, email address, company, selected service, project timeline, budget range and message.</li>
+          <li><strong>Technical information</strong> — like most websites, our hosting provider may log your IP address, browser type and pages visited for security and performance purposes.</li>
+        </ul>
+        <h2>How we use your information</h2>
+        <ul>
+          <li>To respond to your enquiry and provide proposals or services you request.</li>
+          <li>To operate, secure and improve this website.</li>
+          <li>To comply with legal obligations.</li>
+        </ul>
+        <p>We do not sell your personal information, and we do not use it for automated decision-making.</p>
+        <h2>Third-party processors</h2>
+        <p>This website is hosted on Cloudflare, which also protects the quote form from spam with Cloudflare Turnstile. Quote requests are delivered to us by email through Resend, which also sends you a confirmation email. Website fonts are self-hosted, so no data is sent to font providers. {SITE.ga4Id ? 'If you allow analytics cookies, we use Google Analytics to collect anonymous usage statistics; it is not loaded unless you consent.' : 'If we add analytics in future, it will only run with your consent and this policy will be updated.'}</p>
+        <h2 id="cookies">Cookies</h2>
+        <p>Cookies and similar technologies (such as browser local storage) are small pieces of data stored on your device. We group them as follows:</p>
+        <ul>
+          <li><strong>Strictly necessary</strong>: needed for the site to work, for example remembering your cookie choice and protecting the contact form from spam. These cannot be switched off.</li>
+          <li><strong>Analytics</strong>: help us understand how visitors use the site so we can improve it. Used only if you consent.</li>
+          <li><strong>Marketing</strong>: help us measure campaigns and show relevant ads on other platforms. Used only if you consent.</li>
+        </ul>
+        <p>When you first visit, a banner lets you accept all cookies, reject optional ones, or choose by category. You can change your choice at any time using the <a href="#cookies" data-cookie-settings>Cookie settings</a> link in the footer. Your choice is stored in your browser for up to 12 months, after which we may ask again.</p>
+        <h2>Data retention</h2>
+        <p>We keep enquiry data only as long as needed to respond and maintain a business relationship, or as required by law.</p>
+        <h2>Your rights</h2>
+        <p>Depending on where you live, you may have the right to access, correct, delete or restrict the use of your personal data, and to object to processing. To exercise these rights, contact us through our <a href="/contact/">contact page</a>{SITE.contact.email && <> or at <a href={`mailto:${SITE.contact.email}`}>{SITE.contact.email}</a></>}.</p>
+        <h2>Security</h2>
+        <p>We use industry-standard measures, including HTTPS encryption, to protect your information. No method of transmission over the internet is completely secure, but we work to protect your data.</p>
+        <h2>Changes to this policy</h2>
+        <p>We may update this policy from time to time. The “last updated” date above shows when it was last revised.</p>
+      </article>
+    </div>
+  </section>
+</Base>

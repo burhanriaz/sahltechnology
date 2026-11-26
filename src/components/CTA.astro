@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+interface Props { title?: string; text?: string }
+const {
+  title = 'Have a project in mind?',
+  text = 'Tell us what you need. We reply within one business day with next steps and an honest view on scope, timeline and budget.',
+} = Astro.props;
+---
+<section class="section">
+  <div class="container">
+    <div class="glass cta reveal">
+      <div>
+        <span class="eyebrow">Let's talk</span>
+        <h2>{title}</h2>
+        <p class="lead">{text}</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="/contact/">Request a quote <Icon name="arrow" /></a>
+        <a class="btn btn-ghost" href="/services/">Our services</a>
+      </div>
+    </div>
+  </div>
+</section>

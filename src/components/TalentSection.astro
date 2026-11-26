@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+import { services } from '../data/services';
+const talent = services.filter((s) => s.group === 'talent');
+const roles = [
+  { icon: 'code', label: 'Developers & software engineers' },
+  { icon: 'bug', label: 'QA engineers — manual & automation' },
+  { icon: 'cloud', label: 'DevOps & cloud engineers' },
+  { icon: 'search', label: 'SEO experts' },
+  { icon: 'pen', label: 'UI/UX designers' },
+  { icon: 'users', label: 'Complete dedicated teams' },
+];
+---
+<section class="section" id="hire">
+  <div class="container split talent">
+    <div class="reveal">
+      <span class="eyebrow">Hire talent</span>
+      <h2>Grow your team with <span class="grad-text">vetted experts</span></h2>
+      <p class="lead">Hire dedicated professionals who work as part of your team — or let us run your hiring process and find the right people to join your company.</p>
+      <ul class="role-list">
+        {roles.map((r) => <li><span class="role-icon"><Icon name={r.icon} /></span>{r.label}</li>)}
+      </ul>
+    </div>
+    <div class="grid talent-cards">
+      {talent.map((s) => (
+        <a class="glass card reveal" href={`/services/${s.slug}/`}>
+          <div class="icon-tile"><Icon name={s.icon} /></div>
+          <h3>{s.title}</h3>
+          <p>{s.short}</p>
+          <span class="link-arrow">{s.slug === 'tech-recruitment' ? 'See the hiring process' : 'Hire developers & experts'} <Icon name="arrow" /></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .role-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem 1rem; margin-top: 1.75rem; }
+  .role-list li { display: flex; align-items: center; gap: .65rem; font-size: .95rem; color: var(--text); }
+  .role-icon {
+    display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 10px;
+    background: var(--teal-50); color: var(--teal);
+  }
+  .role-icon :global(svg) { width: 17px; height: 17px; }
+  .talent-cards { align-content: center; }
+  @media (max-width: 560px) { .role-list { grid-template-columns: 1fr; } }
+</style>

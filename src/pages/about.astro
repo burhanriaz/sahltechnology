@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CTA from '../components/CTA.astro';
+import TechLogos from '../components/TechLogos.astro';
+import Icon from '../components/Icon.astro';
+import { values } from '../data/content';
+import { photos } from '../data/photos';
+import { breadcrumbSchema } from '../config/schema';
+import { SITE } from '../config/site';
+const crumbs = [{ label: 'About', href: '/about/' }];
+---
+<Base
+  title="About Sahl Technology: Web Development & Automation Team"
+  description="About Sahl Technology: a software development and IT consulting company helping businesses grow with custom software, QA, SEO and expert talent."
+  keywords={['about Sahl Technology', 'software company', 'IT consulting firm']}
+  schema={[breadcrumbSchema(crumbs), { '@type': 'AboutPage', name: `About ${SITE.name}`, about: { '@id': `${SITE.url}/#organization` } }]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="About us"
+    title='Technology partners who care about <span class="grad-text">your outcomes</span>'
+    lead="Sahl Technology helps ambitious businesses turn ideas into reliable digital products — and make smarter decisions about the technology that runs their operations."
+  />
+
+  <section class="section-sm">
+    <div class="container split">
+      <div class="reveal">
+        <Image src={photos.collab} alt="Two developers working side by side at their desks" widths={[480, 720, 960]} sizes="(min-width: 960px) 560px, 100vw" class="photo" loading="eager" fetchpriority="high" />
+      </div>
+      <div class="reveal">
+        <span class="eyebrow">Our story</span>
+        <h2>Technology made easy</h2>
+        <p><strong>Sahl</strong> (سهل) means “easy” in Arabic, and that is the standard we hold ourselves to. Technology should make your work easier, not add another thing to manage.</p>
+        <p>We build websites, web applications and custom business software, automate repetitive processes and testing, and provide dedicated developers, QA engineers and SEO specialists who work as part of your team.</p>
+        <p>Every project follows the same simple approach: understand the real problem, agree a clear plan, show working results every two weeks, and support what we build after launch.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2">
+        <div class="glass card reveal">
+          <div class="icon-tile"><Icon name="target" /></div>
+          <h2 style="font-size:1.6rem">Our mission</h2>
+          <p>To empower businesses with innovative, dependable technology that improves efficiency, delights users and drives sustainable growth.</p>
+        </div>
+        <div class="glass card reveal">
+          <div class="icon-tile"><Icon name="sparkle" /></div>
+          <h2 style="font-size:1.6rem">Our vision</h2>
+          <p>To be the most trusted technology partner for growing companies — known for honest advice, craftsmanship and results that last.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="section-head reveal"><span class="eyebrow">Our values</span><h2>What you can count on</h2></div>
+      <div class="grid grid-3">
+        {values.map((v) => (
+          <div class="glass card reveal"><div class="icon-tile"><Icon name={v.icon} /></div><h3>{v.title}</h3><p>{v.text}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div class="reveal">
+        <span class="eyebrow">Expertise</span>
+        <h2>A modern, proven toolkit</h2>
+        <p class="lead">We are technology-agnostic and pick the right tool for each problem — favouring stacks that are fast, secure, well-supported and easy for your team to maintain.</p>
+        <div style="margin-top:1.5rem"><TechLogos /></div>
+      </div>
+      <div class="reveal">
+        <Image src={photos.peopleLaptops} alt="Overhead view of a team collaborating with laptops and devices" widths={[480, 720, 960]} sizes="(min-width: 960px) 560px, 100vw" class="photo" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <CTA title="Let's build something great together" />
+</Base>

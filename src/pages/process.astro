@@ -1,0 +1,69 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FAQ from '../components/FAQ.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import { photos } from '../data/photos';
+import { breadcrumbSchema, faqSchema } from '../config/schema';
+const crumbs = [{ label: 'Process', href: '/process/' }];
+
+const phases = [
+  { icon: 'search', title: 'Discovery & planning', time: '1–2 weeks', text: 'Workshops to understand your business, users and goals. We map requirements, identify risks and agree on scope, budget and success metrics.', out: ['Requirements & user stories', 'Technical architecture', 'Project plan & estimate'] },
+  { icon: 'pen', title: 'UX & UI design', time: '2–4 weeks', text: 'User flows, wireframes and high-fidelity interactive prototypes. You review and test the experience before a line of production code is written.', out: ['Wireframes & user flows', 'Clickable prototype', 'Design system'] },
+  { icon: 'code', title: 'Agile development', time: 'Sprints of 2 weeks', text: 'Iterative development with a working demo at the end of every sprint. You see progress continuously and can adjust priorities as you learn.', out: ['Sprint demos', 'Staging environment', 'Code reviews & documentation'] },
+  { icon: 'shield', title: 'Quality assurance', time: 'Every sprint', text: 'Automated and manual testing run alongside development — functional, performance, security and cross-device checks.', out: ['Automated test suite', 'Test reports', 'Security checks'] },
+  { icon: 'rocket', title: 'Launch', time: '1 week', text: 'Production deployment, monitoring, analytics and SEO set-up, plus handover and training for your team.', out: ['Production release', 'Monitoring & alerts', 'Team training'] },
+  { icon: 'wrench', title: 'Support & growth', time: 'Ongoing', text: 'Maintenance, updates and new features based on real user data, so your product keeps getting better.', out: ['SLA-backed support', 'Monthly reports', 'Roadmap planning'] },
+];
+const faqs = [
+  { q: 'How involved do I need to be?', a: 'We ask for a short weekly check-in and sprint demo attendance. A single decision-maker on your side keeps things moving quickly.' },
+  { q: 'What tools do you use to manage projects?', a: 'Typically Jira or Linear for tasks, Figma for design, GitHub for code and Slack or Teams for communication. We are happy to use your tools.' },
+  { q: 'What happens if requirements change?', a: 'Change is expected. Agile sprints let us re-prioritise; for fixed-scope projects we agree any changes in writing before work begins.' },
+];
+---
+<Base
+  title="Our Software Development Process"
+  description="How Sahl Technology delivers software: discovery, UX design, agile development, quality assurance, launch and ongoing support — transparent and predictable."
+  keywords={['software development process', 'agile development', 'how we work']}
+  schema={[
+    breadcrumbSchema(crumbs),
+    faqSchema(faqs),
+    { '@type': 'HowTo', name: 'How Sahl Technology delivers a software project', step: phases.map((p, i) => ({ '@type': 'HowToStep', position: i + 1, name: p.title, text: p.text })) },
+  ]}
+>
+  <PageHero crumbs={crumbs} eyebrow="How we work" title='A clear process from <span class="grad-text">idea to impact</span>' lead="Predictable delivery, honest communication and quality at every step — so you always know what is being built, when and why." />
+
+  <section class="section-sm">
+    <div class="container">
+      <ol class="grid grid-3">
+        {phases.map((p, i) => (
+          <li class="glass card reveal">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div class="icon-tile"><Icon name={p.icon} /></div>
+              <span style="color:var(--teal);font-size:1.5rem;font-weight:700">0{i + 1}</span>
+            </div>
+            <h2 style="font-size:1.3rem;margin-bottom:.3rem">{p.title}</h2>
+            <p style="color:var(--brand);font-size:.88rem;font-weight:600;margin-bottom:.8rem">{p.time}</p>
+            <p>{p.text}</p>
+            <ul class="check-list" style="font-size:.95rem">{p.out.map((o) => <li><Icon name="check" /> {o}</li>)}</ul>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div class="reveal"><Image src={photos.whiteboard} alt="Planning a product with wireframes and sticky notes on a whiteboard" widths={[480, 720, 960]} sizes="(min-width: 960px) 560px, 100vw" class="photo" loading="eager" /></div>
+      <div class="reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2>Questions about working with us</h2>
+        <FAQ items={faqs} />
+      </div>
+    </div>
+  </section>
+
+  <CTA />
+</Base>

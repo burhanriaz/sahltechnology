@@ -1,0 +1,8 @@
+---
+// Sahl Technology "S" mark (from the brand favicon pack, transparent PNG).
+interface Props { tile?: boolean }
+const { tile = false } = Astro.props;
+---
+{tile
+  ? <span class="logo-tile"><img src="/icons/favicon-128.png" width="36" height="36" alt="" /></span>
+  : <img src="/icons/favicon-128.png" width="36" height="36" alt="" />}

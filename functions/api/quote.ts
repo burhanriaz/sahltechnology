@@ -204,8 +204,22 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
             : null,
         }),
       });
-      const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
-      if (!res.ok || !out.ok) throw new Error(`Apps Script ${res.status}: ${out.error ?? 'no JSON response'}`);
+      const raw = await res.text();
+      let out: { ok?: boolean; error?: string } = {};
+      try { out = JSON.parse(raw); } catch { /* Google returned an HTML page */ }
+      if (!res.ok || !out.ok) {
+        // Diagnose without leaking the script ID: mask long IDs in the URLs.
+        const mask = (u: string) => u.replace(/[A-Za-z0-9_-]{25,}/g, '…');
+        console.error('quote: Apps Script response', JSON.stringify({
+          status: res.status,
+          configured: mask(env.APPS_SCRIPT_URL),
+          final: mask(res.url),
+          redirected: res.redirected,
+          contentType: res.headers.get('content-type'),
+          body: raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200),
+        }));
+        throw new Error(`Apps Script ${res.status}: ${out.error ?? 'no JSON response'}`);
+      }
     } catch (err) {
       console.error('quote: Apps Script send failed', err);
       return json(502, { ok: false, error: 'We could not send your request. Please try again in a moment.' });

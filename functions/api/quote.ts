@@ -74,11 +74,12 @@ async function readBody(request: Request): Promise<Record<string, string>> {
 
 async function verifyTurnstile(secret: string, token: string, ip: string | null): Promise<boolean> {
   const body = new FormData();
-  body.append('secret', secret);
+  body.append('secret', secret.trim());
   body.append('response', token);
   if (ip) body.append('remoteip', ip);
   const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body });
-  const out = (await res.json()) as { success?: boolean };
+  const out = (await res.json()) as { success?: boolean; 'error-codes'?: string[]; hostname?: string };
+  if (out.success !== true) console.error('quote: Turnstile rejected', JSON.stringify({ codes: out['error-codes'], hostname: out.hostname }));
   return out.success === true;
 }
 

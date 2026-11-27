@@ -81,7 +81,8 @@ account and logs every enquiry to a Google Sheet. When `APPS_SCRIPT_URL` and
 3. **Deploy → New deployment → Web app**: Execute as **Me**, Who has access **Anyone** → Deploy,
    and copy the web-app URL (ends in `/exec`).
 4. In Cloudflare Pages → Settings → Variables and secrets (Production) add:
-   `APPS_SCRIPT_URL` (Secret), `APPS_SCRIPT_SECRET` (Secret), `QUOTE_TO_EMAIL`, `QUOTE_FROM_NAME`
+   `APPS_SCRIPT_URL` (Secret), `APPS_SCRIPT_SECRET` (Secret), `QUOTE_TO_EMAIL`, `QUOTE_FROM_NAME`,
+   optional `QUOTE_CC_EMAIL` (CC on every enquiry)
    (`QUOTE_FROM_EMAIL` and `RESEND_API_KEY` are not needed). Then redeploy.
 
 Free Gmail accounts can send to about 100 recipients a day (each enquiry uses 2).

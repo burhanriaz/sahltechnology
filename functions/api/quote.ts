@@ -14,6 +14,7 @@
  *   RESEND_API_KEY     (secret)  Resend API key (alternative to Apps Script)
  *   TURNSTILE_SECRET   (secret)  Turnstile secret key; when set, a valid token is required
  *   QUOTE_TO_EMAIL             inbox that receives enquiries
+ *   QUOTE_CC_EMAIL             optional: also CC this address on every enquiry
  *   QUOTE_FROM_EMAIL           Resend only: sender on a verified domain, e.g. quotes@studio.sahlcalc.com
  *   QUOTE_FROM_NAME            sender display name (default "Sahl Technology Quotes")
  *   QUOTE_REPLY_TO             optional: where client replies to the confirmation go (default QUOTE_TO_EMAIL)
@@ -27,6 +28,7 @@ interface Env {
   RESEND_API_KEY?: string;
   TURNSTILE_SECRET?: string;
   QUOTE_TO_EMAIL?: string;
+  QUOTE_CC_EMAIL?: string;
   QUOTE_FROM_EMAIL?: string;
   QUOTE_FROM_NAME?: string;
   QUOTE_REPLY_TO?: string;
@@ -192,6 +194,7 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
           fields: f,
           config: {
             to: env.QUOTE_TO_EMAIL,
+            cc: env.QUOTE_CC_EMAIL || '',
             fromName: env.QUOTE_FROM_NAME || 'Sahl Technology Quotes',
             replyTo: env.QUOTE_REPLY_TO || env.QUOTE_TO_EMAIL,
           },
@@ -222,6 +225,7 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
     await sendEmail(env, {
       from,
       to: [env.QUOTE_TO_EMAIL],
+      ...(env.QUOTE_CC_EMAIL ? { cc: [env.QUOTE_CC_EMAIL] } : {}),
       reply_to: f.email,
       subject,
       html: enquiry.html,

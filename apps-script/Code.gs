@@ -11,7 +11,7 @@
  * and appends each enquiry to a Google Sheet (lead log).
  *
  * Email addresses and the sender name come from Cloudflare variables
- * (QUOTE_TO_EMAIL, QUOTE_FROM_NAME, QUOTE_REPLY_TO), so none are stored in this file.
+ * (QUOTE_TO_EMAIL, QUOTE_CC_EMAIL, QUOTE_FROM_NAME, QUOTE_REPLY_TO), so none are stored in this file.
  *
  * SETUP (once):
  *   1. Run → setup  (approve Google's permission screen)
@@ -69,6 +69,7 @@ function doPost(e) {
     // 1. Enquiry to Sahl Technology (Reply goes straight to the customer)
     MailApp.sendEmail({
       to: cfg.to,
+      cc: cfg.cc || '',
       replyTo: f.email,
       name: cfg.fromName || 'Sahl Technology Quotes',
       subject: body.enquiry.subject,

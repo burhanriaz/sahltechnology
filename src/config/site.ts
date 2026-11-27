@@ -53,7 +53,7 @@ export const SITE = {
   /** Quote form: posts to the Cloudflare Pages Function in functions/api/quote.ts (sends via Resend). */
   quoteEndpoint: '/api/quote',
   /** Cloudflare Turnstile SITE key (public). Empty = no spam widget; set it before launch. */
-  turnstileSiteKey: '',
+  turnstileSiteKey: '0x4AAAAAAGWMb6bkjEdGzc_r',
 } as const;
 
 export const NAV = [

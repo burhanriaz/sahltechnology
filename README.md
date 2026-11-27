@@ -70,6 +70,22 @@ with the shared handler in `functions/api/quote.ts` (the same file also works as
 
    Redeploy (or push to `main`) after changing variables.
 
+### Sending email with Google Apps Script (no Resend needed)
+`apps-script/Code.gs` is a Google Apps Script web app that sends the emails from your Gmail
+account and logs every enquiry to a Google Sheet. When `APPS_SCRIPT_URL` and
+`APPS_SCRIPT_SECRET` are set, the form uses it instead of Resend.
+
+1. script.google.com → New project → paste `apps-script/Code.gs` → Save.
+2. Choose `setup` → **Run** → approve Google's permission screen. The execution log shows the
+   lead-sheet link and the `APPS_SCRIPT_SECRET` value.
+3. **Deploy → New deployment → Web app**: Execute as **Me**, Who has access **Anyone** → Deploy,
+   and copy the web-app URL (ends in `/exec`).
+4. In Cloudflare Pages → Settings → Variables and secrets (Production) add:
+   `APPS_SCRIPT_URL` (Secret), `APPS_SCRIPT_SECRET` (Secret), `QUOTE_TO_EMAIL`, `QUOTE_FROM_NAME`
+   (`QUOTE_FROM_EMAIL` and `RESEND_API_KEY` are not needed). Then redeploy.
+
+Free Gmail accounts can send to about 100 recipients a day (each enquiry uses 2).
+
 **How the form works:** the enquiry email goes to `QUOTE_TO_EMAIL` with the client as Reply-To,
 so pressing Reply answers the client directly. The client gets a confirmation email whose
 Reply-To is your inbox. Bots are stopped by a hidden honeypot field, Turnstile and a same-origin check.

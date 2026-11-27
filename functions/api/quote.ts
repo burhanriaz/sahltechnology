@@ -3,15 +3,18 @@
  *
  * 1. Accepts JSON (from the React quote form) or form-encoded data.
  * 2. Rejects cross-site posts, bots (honeypot + Cloudflare Turnstile) and invalid input.
- * 3. Sends two emails through Resend:
+ * 3. Sends two emails, through a Google Apps Script web app (apps-script/Code.gs, sends from
+ *    your Gmail and logs to a Google Sheet) or, if that isn't configured, through Resend:
  *      - the enquiry to the Sahl Technology inbox (Reply goes straight to the client)
  *      - a confirmation to the client (Reply goes to the Sahl Technology inbox)
  *
- * Configure in Cloudflare Pages → Settings → Environment variables (see README):
- *   RESEND_API_KEY   (secret)  Resend API key
- *   TURNSTILE_SECRET (secret)  Turnstile secret key; when set, a valid token is required
+ * Configure in Cloudflare Pages → Settings → Variables and secrets (see README):
+ *   APPS_SCRIPT_URL    (secret)  Apps Script web-app URL (…/exec)  ─┐ Gmail sending
+ *   APPS_SCRIPT_SECRET (secret)  value logged by setup() in Code.gs ─┘ (preferred)
+ *   RESEND_API_KEY     (secret)  Resend API key (alternative to Apps Script)
+ *   TURNSTILE_SECRET   (secret)  Turnstile secret key; when set, a valid token is required
  *   QUOTE_TO_EMAIL             inbox that receives enquiries
- *   QUOTE_FROM_EMAIL           sender on a Resend-verified domain, e.g. quotes@studio.sahlcalc.com
+ *   QUOTE_FROM_EMAIL           Resend only: sender on a verified domain, e.g. quotes@studio.sahlcalc.com
  *   QUOTE_FROM_NAME            sender display name (default "Sahl Technology Quotes")
  *   QUOTE_REPLY_TO             optional: where client replies to the confirmation go (default QUOTE_TO_EMAIL)
  *   QUOTE_AUTOREPLY            optional: "off" disables the client confirmation email
@@ -19,6 +22,8 @@
  */
 
 interface Env {
+  APPS_SCRIPT_URL?: string;
+  APPS_SCRIPT_SECRET?: string;
   RESEND_API_KEY?: string;
   TURNSTILE_SECRET?: string;
   QUOTE_TO_EMAIL?: string;
@@ -166,8 +171,48 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
 
   if (env.QUOTE_DRY_RUN === '1') return json(200, { ok: true, dryRun: true });
 
+  const subject = oneLine(`Quote request: ${f.service} from ${f.name}${f.company ? ` (${f.company})` : ''}`).slice(0, 180);
+  const autoreply = env.QUOTE_AUTOREPLY !== 'off';
+
+  // ── Preferred: Google Apps Script web app (sends from your Gmail, logs to a Sheet) ──
+  if (env.APPS_SCRIPT_URL && env.APPS_SCRIPT_SECRET) {
+    if (!env.QUOTE_TO_EMAIL) {
+      console.error('quote: missing QUOTE_TO_EMAIL');
+      return json(500, { ok: false, error: 'The form is not configured yet. Please try again later.' });
+    }
+    const enquiry = enquiryEmail(f);
+    const conf = confirmationEmail(f);
+    try {
+      const res = await fetch(env.APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        redirect: 'follow',
+        body: JSON.stringify({
+          secret: env.APPS_SCRIPT_SECRET,
+          fields: f,
+          config: {
+            to: env.QUOTE_TO_EMAIL,
+            fromName: env.QUOTE_FROM_NAME || 'Sahl Technology Quotes',
+            replyTo: env.QUOTE_REPLY_TO || env.QUOTE_TO_EMAIL,
+          },
+          enquiry: { subject, html: enquiry.html, text: enquiry.text },
+          confirmation: autoreply
+            ? { subject: 'We received your quote request | Sahl Technology', html: conf.html, text: conf.text }
+            : null,
+        }),
+      });
+      const out = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok || !out.ok) throw new Error(`Apps Script ${res.status}: ${out.error ?? 'no JSON response'}`);
+    } catch (err) {
+      console.error('quote: Apps Script send failed', err);
+      return json(502, { ok: false, error: 'We could not send your request. Please try again in a moment.' });
+    }
+    return json(200, { ok: true });
+  }
+
+  // ── Alternative: Resend ──
   if (!env.RESEND_API_KEY || !env.QUOTE_TO_EMAIL || !env.QUOTE_FROM_EMAIL) {
-    console.error('quote: missing RESEND_API_KEY, QUOTE_TO_EMAIL or QUOTE_FROM_EMAIL');
+    console.error('quote: no sender configured (APPS_SCRIPT_URL + APPS_SCRIPT_SECRET, or RESEND_API_KEY + QUOTE_FROM_EMAIL) or QUOTE_TO_EMAIL missing');
     return json(500, { ok: false, error: 'The form is not configured yet. Please try again later.' });
   }
 
@@ -178,7 +223,7 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
       from,
       to: [env.QUOTE_TO_EMAIL],
       reply_to: f.email,
-      subject: oneLine(`Quote request: ${f.service} from ${f.name}${f.company ? ` (${f.company})` : ''}`).slice(0, 180),
+      subject,
       html: enquiry.html,
       text: enquiry.text,
     });
@@ -187,7 +232,7 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
     return json(502, { ok: false, error: 'We could not send your request. Please try again in a moment.' });
   }
 
-  if (env.QUOTE_AUTOREPLY !== 'off') {
+  if (autoreply) {
     try {
       const conf = confirmationEmail(f);
       await sendEmail(env, {

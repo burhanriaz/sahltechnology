@@ -215,7 +215,15 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
 
   // ── Alternative: Resend ──
   if (!env.RESEND_API_KEY || !env.QUOTE_TO_EMAIL || !env.QUOTE_FROM_EMAIL) {
-    console.error('quote: no sender configured (APPS_SCRIPT_URL + APPS_SCRIPT_SECRET, or RESEND_API_KEY + QUOTE_FROM_EMAIL) or QUOTE_TO_EMAIL missing');
+    // Log which settings are present (true/false only, never the values).
+    console.error('quote: no sender configured', JSON.stringify({
+      APPS_SCRIPT_URL: !!env.APPS_SCRIPT_URL,
+      APPS_SCRIPT_SECRET: !!env.APPS_SCRIPT_SECRET,
+      RESEND_API_KEY: !!env.RESEND_API_KEY,
+      QUOTE_FROM_EMAIL: !!env.QUOTE_FROM_EMAIL,
+      QUOTE_TO_EMAIL: !!env.QUOTE_TO_EMAIL,
+      envKeys: Object.keys(env).filter((k) => /^(APPS_|QUOTE_|RESEND_|TURNSTILE_)/.test(k)),
+    }));
     return json(500, { ok: false, error: 'The form is not configured yet. Please try again later.' });
   }
 

@@ -222,7 +222,7 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
       }
     } catch (err) {
       console.error('quote: Apps Script send failed', err);
-      return json(502, { ok: false, error: 'We could not send your request. Please try again in a moment.' });
+      return json(500, { ok: false, error: 'We could not send your request. Please try again in a moment.' });
     }
     return json(200, { ok: true });
   }
@@ -255,7 +255,7 @@ export const onRequestPost = async ({ request, env }: Ctx): Promise<Response> =>
     });
   } catch (err) {
     console.error('quote: enquiry email failed', err);
-    return json(502, { ok: false, error: 'We could not send your request. Please try again in a moment.' });
+    return json(500, { ok: false, error: 'We could not send your request. Please try again in a moment.' });
   }
 
   if (autoreply) {
